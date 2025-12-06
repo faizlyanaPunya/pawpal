@@ -470,7 +470,7 @@ class _SubmitPetPageState extends State<SubmitPetPage> {
             if (resarray['status'] == 'success') {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text("Service submitted successfully"),
+                  content: Text("Pet submitted successfully"),
                   backgroundColor: Colors.green,
                 ),
               );
