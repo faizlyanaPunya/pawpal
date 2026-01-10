@@ -11,6 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             p.user_id,
             p.pet_name,
             p.pet_type,
+            p.pet_gender,
+            p.pet_age,
+            p.pet_health,
             p.category,
             p.description,
             p.image_paths,
@@ -24,15 +27,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         JOIN tbl_users u ON p.user_id = u.user_id
     ";
 
+    // Initialize WHERE conditions array
+    $conditions = array();
+
     // Search logic
     if (isset($_GET['search']) && !empty($_GET['search'])) {
         $search = $conn->real_escape_string($_GET['search']);
-        $sqlloadpets = $baseQuery . "
-            WHERE p.pet_name LIKE '%$search%' 
-               OR p.pet_type LIKE '%$search%'
-               OR p.category LIKE '%$search%'
-               OR p.description LIKE '%$search%'
-            ORDER BY p.pet_id DESC";
+        $conditions[] = "(
+            p.pet_name LIKE '%$search%' 
+            OR p.pet_type LIKE '%$search%'
+            OR p.category LIKE '%$search%'
+            OR p.description LIKE '%$search%'
+        )";
+    }
+
+    // Filter logic
+    if (isset($_GET['filter']) && !empty($_GET['filter'])) {
+        $filter = $conn->real_escape_string($_GET['filter']);
+        $conditions[] = "p.pet_type = '$filter'";
+    }
+
+    // Build final query
+    if (count($conditions) > 0) {
+        $sqlloadpets = $baseQuery . " WHERE " . implode(' AND ', $conditions) . " ORDER BY p.pet_id DESC";
     } else {
         $sqlloadpets = $baseQuery . " ORDER BY p.pet_id DESC";
     }
@@ -52,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     }
 
 } else {
-    $response = array('status' => 'failed');
+    $response = array('status' => 'failed', 'message' => 'Method Not Allowed');
     sendJsonResponse($response);
     exit();
 }

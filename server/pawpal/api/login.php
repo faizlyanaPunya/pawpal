@@ -1,6 +1,6 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json"); // running as crome app
+header("Content-Type: application/json"); // running as chrome app
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!isset($_POST['email']) || !isset($_POST['password'])) {

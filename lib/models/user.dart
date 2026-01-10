@@ -5,6 +5,7 @@ class User {
   String? userPhone;
   String? userPassword;
   String? userRegdate;
+  String? imagePath;
 
   User(
       {this.userId,
